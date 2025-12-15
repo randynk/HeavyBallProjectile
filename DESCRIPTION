@@ -1,0 +1,15 @@
+Package: HeavyBallProjectile
+Title: The package determines the optimal initial parameters for a projectile launch, taking into account atmospheric disturbances and the mass variation of the refueling fluid
+Version: 0.0.0.9000
+Authors@R: 
+    person("NKAMWA WAKIEU", "Randy", , "viaatools@gmail.com", role = c("aut", "cre"))
+Description: The package automates the implementation of the Heavy Ball Method for determining the optimal values of three launching parameters: Propulsion Velocity, Ejection Velocity, and the Launch Angle. These parameters pertain to a projectile subject to random atmospheric pressure fluctuations (in terms of direction). Furthermore, the package allows for the simple simulation of the convergence behavior of the optimization parameters. All of this is performed by analyzing the trajectory along the x-axis.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+LazyData: true
+Imports:
+    gsl,
+    ggplot2,
+    tidyr
