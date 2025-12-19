@@ -2,7 +2,7 @@
 % Please edit documentation in R/masse.R
 \name{masse}
 \alias{masse}
-\title{Title TOTAL MASS}
+\title{TOTAL MASS}
 \usage{
 masse(t, lambda = LAMBDA, m_0 = M_I, M_0 = M_N)
 }
@@ -19,7 +19,7 @@ masse(t, lambda = LAMBDA, m_0 = M_I, M_0 = M_N)
 THE TOTAL MASS OF THE PROJECTILE AT TIME t
 }
 \description{
-Title TOTAL MASS
+TOTAL MASS
 }
 \examples{
 masse(34, 0.03, 8, 12)

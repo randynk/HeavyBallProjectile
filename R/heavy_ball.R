@@ -20,27 +20,35 @@ library(tidyr)
 # limite the step limit of the loop algorithm
 # tolerance error tolerance
 
-ALPHA_MIN <- 10
-ALPHA_MAX <- 86
-Vo_MIN <- 10
-Vo_MAX <- 60
-Ve_MIN <- 8
-Ve_MAX <- 35
+ALPHA_TEST <- 35
+Vo_TEST <- 12
+Ve_TEST <- 20
+ALPHA_MIN <- 0
+ALPHA_MAX <- 2*pi
+Vo_MIN <- 30
+Vo_MAX <- 90
+Ve_MIN <- 7
+Ve_MAX <- 24
 HEAVY_ALPHA <- 0.001
-HEAVY_GAMMA <- 0.85
-LIMITE <- 250
+HEAVY_GAMMA <- 0.83
+LIMITE <- 150
 TOLERANCE <- 0.006
-DATE <- 5
+DATE <- 10
 
+ABCISSE_CIBLE <- 12779.2843
 M_N <- 12
 M_I <- 5
 LAMBDA <- 0.02
-V_E <- 9
-ALPHA <- 60
-V_0 <- 12
+V_E <- 12
+Ro <- 0.01
+A_X <- -8.33
+C_X <- 4.345
+V_R <- 0.47
+ALPHA <- 0.25*pi
+V_0 <- 40
 
 ## A FUNCTION SPECIFICALLY DESIGNED TO MONITOR THE VARIOUS CONSTRAINTS APPLIED TO THE OPTIMIZATION PARAMETERS
-#' Title contraints
+#' contraints
 #'
 #' @param alpha the Launch Angle of the projectile in the (x,z) plane
 #' @param Vo the magnitude of the Propulsion Velocity
@@ -67,7 +75,7 @@ contrainte <- function(alpha, Vo, Ve, alpha_min = ALPHA_MIN, alpha_max = ALPHA_M
 }
 
 # THE DETERMINISTIC FORM OF THE GRADIENT FOR OUR ERROR FUNCTION (Ecart()), WHICH WE ARE SEEKING TO MINIMIZE.
-#' Title GRADIENT FUNCTION
+#' GRADIENT FUNCTION
 #'
 #' @param t the time date in seconds
 #' @param lambda the Fluid Expulsion Parameter
@@ -76,11 +84,11 @@ contrainte <- function(alpha, Vo, Ve, alpha_min = ALPHA_MIN, alpha_max = ALPHA_M
 #' @param Ve the magnitude of the Ejection Velocity of the replenishment fluid
 #' @param alpha  the Launch Angle of the projectile in the x,z plane
 #' @param Vo the magnitude of the Propulsion Velocity
+#' @import ggplot2
+#' @import tidyr
 #'
 #' @returns the gradient of our error function
 #' @export
-#' @import ggplot2
-#' @import tidyr
 #'
 #' @examples
 #' gradient_ecart_x(13)
@@ -94,7 +102,7 @@ gradient_ecart_x <- function(t, lambda = LAMBDA, m_0 = M_I, M_0 = M_N, Ve = V_E,
 }
 
 # FUNCTION THAT RETURNS THE OPTIMAL VALUES OF THE OPTIMAL PARAMETERS
-#' Title HEAVY BALL ALGORITHM
+#' HEAVY BALL ALGORITHM
 #'
 #' @param t the time date in seconds
 #' @param heavy_alpha the algorithm second main parameter
@@ -115,8 +123,9 @@ gradient_ecart_x <- function(t, lambda = LAMBDA, m_0 = M_I, M_0 = M_N, Ve = V_E,
 #' @export
 #'
 #'
-heavy_ball <- function(t = DATE, heavy_alpha = HEAVY_ALPHA, heavy_gamma = HEAVY_GAMMA, alpha_min = ALPHA_MIN, alpha_max = ALPHA_MAX, Vo_min = Vo_MIN, Vo_max = Vo_MAX, Ve_min = Ve_MIN, Ve_max = Ve_MAX, limite = LIMITE, tolerance = TOLERANCE, lambda = LAMBDA, m_0 = M_I, M_0 = M_N){
+heavy_ball <- function(t = DATE, heavy_alpha = HEAVY_ALPHA, heavy_gamma = HEAVY_GAMMA, alpha_min = ALPHA_MIN, alpha_max = ALPHA_MAX, Vo_min = Vo_MIN, Vo_max = Vo_MAX, Ve_min = Ve_MIN, Ve_max = Ve_MAX, limite = LIMITE, tolerance = TOLERANCE, alpha_test = ALPHA_TEST, Vo_test = Vo_TEST, Ve_test = Ve_TEST, abcisse_cible = ABCISSE_CIBLE, lambda = LAMBDA, m_0 = M_I, M_0 = M_N){
 
+  temps <- seq(0, 5, 0.05)
   # WE INITIALIZE THE DECISION VARIABLES
   alpha <- alpha_max
   Vo <- Vo_max
@@ -134,67 +143,95 @@ heavy_ball <- function(t = DATE, heavy_alpha = HEAVY_ALPHA, heavy_gamma = HEAVY_
 
   for (etape in 1:limite) {
 
-      # WE COMPUTE THE GRADIENT AT EVERY STEP
-      grad <- gradient_ecart_x(t, lambda, m_0, M_0, Ve, alpha, Vo)
+    # WE COMPUTE THE GRADIENT AT EVERY STEP
+    grad <- gradient_ecart_x(t, lambda, m_0, M_0, Ve, alpha, Vo)
 
-      V_k <- heavy_gamma*V_k - heavy_alpha*grad
+    V_k <- heavy_gamma*V_k - heavy_alpha*grad
 
-      alpha <- alpha + V_k
-      Vo <- Vo + V_k
-      Ve <- Ve + V_k
+    alpha <- alpha + V_k
+    Vo <- Vo + V_k
+    Ve <- Ve + V_k
 
-      historique_alpha <- c(historique_alpha, alpha)
-      historique_Vo <- c(historique_Vo, Vo)
-      historique_Ve <- c(historique_Ve, Ve)
+    historique_alpha <- c(historique_alpha, alpha)
+    historique_Vo <- c(historique_Vo, Vo)
+    historique_Ve <- c(historique_Ve, Ve)
 
-      historique_gradient[etape] <- grad
+    historique_gradient[etape] <- grad
 
-      cat("\n", etape, " :: ", contrainte(alpha, Vo, Ve), " :: ", tolerance-abs(grad), ", alpha ::", alpha, ", Vo :: ", Vo, ", Ve :: ", Ve)
-      if(abs(grad)<tolerance & contrainte(alpha, Vo, Ve)==TRUE){# WE COMPARE THE GRADIENT TO THE LIMIT VALUE AT EVERY STEP
+    cat("\n", etape, " :: ", contrainte(alpha, Vo, Ve), " :: ", abs(grad), ", alpha ::", alpha, ", Vo :: ", Vo, ", Ve :: ", Ve)
+    if(abs(grad)<tolerance & contrainte(alpha, Vo, Ve)==TRUE){# WE COMPARE THE GRADIENT TO THE LIMIT VALUE AT EVERY STEP
 
-        # WE COLLECT ALL THE VALUES OF THE DECISION VARIABLES TESTED UP TO THE POINT OF CONVERGENCE.
-        # THESE VALUES WILL ALLOW US TO PLOT (or VISUALIZE) THEIR CONVERGENCE PATHS
-        historique_gradient <- historique_gradient[1:etape]
-        historique_alpha <- historique_alpha[1:etape]
-        historique_Vo <- historique_Vo[1:etape]
-        historique_Ve <- historique_Ve[1:etape]
-        evolution <- c(seq(1:etape))
+      # WE COLLECT ALL THE VALUES OF THE DECISION VARIABLES TESTED UP TO THE POINT OF CONVERGENCE.
+      # THESE VALUES WILL ALLOW US TO PLOT (or VISUALIZE) THEIR CONVERGENCE PATHS
+      historique_gradient <- historique_gradient[1:etape]
+      historique_alpha <- historique_alpha[1:etape]
+      historique_Vo <- historique_Vo[1:etape]
+      historique_Ve <- historique_Ve[1:etape]
+      evolution <- c(seq(1:etape))
 
-        # WE CREATE THE CORRESPONDING DATA FRAME
-        projectile <- data.frame(
-          evolution = evolution,
-          alpha = historique_alpha,
-          Vo = historique_Vo,
-          Ve = historique_Ve,
-          Gradient = historique_gradient
-        )
+      # WE CREATE THE CORRESPONDING DATA FRAME
+      projectile <- data.frame(
+        evolution = evolution,
+        alpha = historique_alpha,
+        Vo = historique_Vo,
+        Ve = historique_Ve,
+        Gradient = historique_gradient
+      )
 
-        View(projectile)
+      #View(projectile)
 
-        # TURNING THE LARGE FRAME INTO A LONG FRAME EASIER TO MANAGE
-        projectile_long <- pivot_longer(
-          projectile,
-          cols = c(alpha, Vo, Ve, Gradient),
-          names_to = "parametre",
-          values_to = "valeur"
-        )
+      # TURNING THE LARGE FRAME INTO A LONG FRAME EASIER TO MANAGE
+      projectile_long <- pivot_longer(
+        projectile,
+        cols = c(alpha, Vo, Ve, Gradient),
+        names_to = "parametre",
+        values_to = "valeur"
+      )
 
-        # CREATING AND SAVING THE PLOTS ON A PICTURE
-        ggplot(projectile_long, aes(x = evolution, y = valeur)) +
-          geom_line(color = "blue", linewidth = 1) +  # linewidth au lieu de size
-          facet_wrap(~ parametre, scales = "free_y", ncol = 2) +
-          labs(title = "Évolution des paramètres", x = "Itération", y = "Valeur") +
-          theme_minimal()
+      # CREATING AND SAVING THE PLOTS ON A PICTURE
+      ggplot(projectile_long, aes(x = evolution, y = valeur)) +
+        geom_line(color = "blue", linewidth = 1) +  # linewidth au lieu de size
+        facet_wrap(~ parametre, scales = "free_y", ncol = 2) +
+        labs(title = "Évolution des paramètres", x = "Itération", y = "Valeur") +
+        theme_minimal()
 
-        ggsave("graphiques_projectile.png", width = 10, height = 8, dpi = 300)
+      ggsave("graphiques_projectile.png", width = 10, height = 8, dpi = 300)
 
-        write.csv(projectile, "Donnees_projectile.csv")
-        convergence <- etape
+      #write.csv(projectile, "Donnees_projectile.csv")
+      convergence <- etape
 
-        break
-      }
+      break
+    }
   }# WE DISPLAY (or PRINT) THE OPTIMAL PARAMETERS FOUND BY THE ALGORITHM
-  return(cat("\n\nConvergence atteinte à l'iteration ", convergence, "\n", "Les parametres optimaux sont :\nalpha :: ", historique_alpha[convergence], "° , ", "\nVo    :: ", historique_Vo[convergence], "\nVe    :: ", historique_Ve[convergence]))
+
+  projectiles <- data.frame(
+    temps = temps,
+    ecart_non_optimal = distance_x(t = temps, alpha = alpha_test, Vo = Vo_test, Ve = Ve_test) - abcisse_cible,
+    ecart_optimal = distance_x(t = temps, alpha = historique_alpha[convergence], Vo = historique_Vo[convergence], Ve = historique_Ve[convergence] - abcisse_cible)
+  )
+
+  # TURNING THE LARGE FRAME INTO A LONG FRAME EASIER TO MANAGE
+  projectiles_long <- pivot_longer(projectiles,
+                                   cols = c(ecart_non_optimal, ecart_optimal),
+                                   names_to = "type",
+                                   values_to = "erreur")
+
+  # CREATING AND SAVING  THE COMPARISON PLOT ON A PICTURE
+  graph <- ggplot(projectiles_long, aes(x = temps, y = erreur, color = type)) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = c("ecart_non_optimal" = "red",
+                                  "ecart_optimal" = "blue"),
+                       labels = c("Non optimale", "Optimale")) +
+    labs(x = "Temps (s)",
+         y = "Erreur sur l'abcisse",
+         title = "Comparaison des erreurs",
+         color = "Type de trajectoire") +
+    theme_minimal()
+
+  ggsave("graphique_projectiles.png", width = 10, height = 8, dpi = 300)
+  print(graph)
+
+  return(cat("\n\nConvergence atteinte à l'iteration ", convergence, "\n", "Les parametres optimaux sont :\nalpha :: ", historique_alpha[convergence]/pi, "π , ", "\nVo    :: ", historique_Vo[convergence], "\nVe    :: ", historique_Ve[convergence]))
 }
 
 # Heavy Ball Method functions are initialized with starting values and can be customized for specific situations

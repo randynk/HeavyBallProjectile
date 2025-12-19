@@ -2,7 +2,7 @@
 % Please edit documentation in R/contrainte.R, R/heavy_ball.R
 \name{contrainte}
 \alias{contrainte}
-\title{Title contraints}
+\title{contraints}
 \usage{
 contrainte(
   alpha,
@@ -53,9 +53,9 @@ TRUE if the main conditions on the decision parameters status are right and FALS
 TRUE if the main conditions on the decision parameters status are right and FALSE if not
 }
 \description{
-Title contraints
+contraints
 
-Title contraints
+contraints
 }
 \examples{
 contrainte(45, 12, 9, 10, 86, 10, 60, 8, 35)

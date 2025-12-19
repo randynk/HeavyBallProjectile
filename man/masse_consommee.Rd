@@ -2,7 +2,7 @@
 % Please edit documentation in R/masse_consommee.R
 \name{masse_consommee}
 \alias{masse_consommee}
-\title{Title CONSUMED REPLENISHMENT MASS}
+\title{CONSUMED REPLENISHMENT MASS}
 \usage{
 masse_consommee(t, lambda = LAMBDA, m_0 = M_I)
 }
@@ -17,7 +17,7 @@ masse_consommee(t, lambda = LAMBDA, m_0 = M_I)
 THE CONSUMED REPLENISHMENT MASS AT TIME t
 }
 \description{
-Title CONSUMED REPLENISHMENT MASS
+CONSUMED REPLENISHMENT MASS
 }
 \examples{
 masse_consommee(15, 0.07, 9)

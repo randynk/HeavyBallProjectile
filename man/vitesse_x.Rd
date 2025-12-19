@@ -2,7 +2,7 @@
 % Please edit documentation in R/vitesse_x.R, R/vitesse_x_en_m_par_s.R
 \name{vitesse_x}
 \alias{vitesse_x}
-\title{Title ORIZONTAL VELOCITY}
+\title{HORIZONTAL VELOCITY}
 \usage{
 vitesse_x(
   t,
@@ -61,9 +61,9 @@ THE HORIZONTAL COMPONENT OF VELOCITY
 THE HORIZONTAL COMPONENT OF VELOCITY
 }
 \description{
-Title ORIZONTAL VELOCITY
+HORIZONTAL VELOCITY
 
-Title ORIZONTAL VELOCITY
+HORIZONTAL VELOCITY
 }
 \examples{
 vitesse_x(51, 0.008, 9, 21, 9, 0.01, 4.12, -7.8, 12, 0.5*pi, 39)

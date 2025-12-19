@@ -2,7 +2,7 @@
 % Please edit documentation in R/masse_restante.R
 \name{masse_restante}
 \alias{masse_restante}
-\title{Title REMAINING MASS WITHIN THE PROJECTILE}
+\title{REMAINING MASS WITHIN THE PROJECTILE}
 \usage{
 masse_restante(t, lambda = LAMBDA, m_0 = M_I)
 }
@@ -17,7 +17,7 @@ masse_restante(t, lambda = LAMBDA, m_0 = M_I)
 THE REMAINING MASS WITHIN THE PROJECTILE
 }
 \description{
-Title REMAINING MASS WITHIN THE PROJECTILE
+REMAINING MASS WITHIN THE PROJECTILE
 }
 \examples{
 masse_restante(15, 0.02, 8)

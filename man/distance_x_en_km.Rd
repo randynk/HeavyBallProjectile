@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_x_en_km.R
 \name{distance_x_en_km}
 \alias{distance_x_en_km}
-\title{Title DISTANCE ALONG X IN Km}
+\title{DISTANCE ALONG X IN Km}
 \usage{
 distance_x_en_km(
   t,
@@ -45,7 +45,7 @@ distance_x_en_km(
 the projectile position along x at time t in Km
 }
 \description{
-Title DISTANCE ALONG X IN Km
+DISTANCE ALONG X IN Km
 }
 \examples{
 distance_x_en_km(51, 0.008, 9, 21, 9, 0.01, 4.12, -7.8, 12, 0.5*pi, 39)

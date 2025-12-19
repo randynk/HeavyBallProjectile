@@ -2,7 +2,7 @@
 % Please edit documentation in R/heavy_ball.R
 \name{heavy_ball}
 \alias{heavy_ball}
-\title{Title HEAVY BALL ALGORITHM}
+\title{HEAVY BALL ALGORITHM}
 \usage{
 heavy_ball(
   t = DATE,
@@ -16,6 +16,10 @@ heavy_ball(
   Ve_max = Ve_MAX,
   limite = LIMITE,
   tolerance = TOLERANCE,
+  alpha_test = ALPHA_TEST,
+  Vo_test = Vo_TEST,
+  Ve_test = Ve_TEST,
+  abcisse_cible = ABCISSE_CIBLE,
   lambda = LAMBDA,
   m_0 = M_I,
   M_0 = M_N
@@ -54,5 +58,5 @@ heavy_ball(
 the optimal parameters, a dataframe, a picture, an csv file, the convergence parameters
 }
 \description{
-Title HEAVY BALL ALGORITHM
+HEAVY BALL ALGORITHM
 }

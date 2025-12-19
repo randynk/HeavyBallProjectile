@@ -2,7 +2,7 @@
 % Please edit documentation in R/ecart_x.R
 \name{ecart_x}
 \alias{ecart_x}
-\title{Title ABSOLUTE DISTANCE ERROR}
+\title{ABSOLUTE DISTANCE ERROR}
 \usage{
 ecart_x(
   t,
@@ -48,7 +48,7 @@ ecart_x(
 THE ABSOLUTE DIFFERENCE (OR ABSOLUTE ERROR) BETWEEN THE PROJECTILE'S CURRENT HORIZONTAL POSITION AND THE TARGET'S HORIZONTAL POSITION
 }
 \description{
-Title ABSOLUTE DISTANCE ERROR
+ABSOLUTE DISTANCE ERROR
 }
 \examples{
 ecart_x(51, abcisse_cible)

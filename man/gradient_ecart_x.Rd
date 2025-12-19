@@ -2,7 +2,7 @@
 % Please edit documentation in R/gradient_ecart_x.R, R/heavy_ball.R
 \name{gradient_ecart_x}
 \alias{gradient_ecart_x}
-\title{Title GRADIENT FUNCTION}
+\title{GRADIENT FUNCTION}
 \usage{
 gradient_ecart_x(
   t,
@@ -45,9 +45,9 @@ the gradient of our error function
 the gradient of our error function
 }
 \description{
-Title GRADIENT FUNCTION
+GRADIENT FUNCTION
 
-Title GRADIENT FUNCTION
+GRADIENT FUNCTION
 }
 \examples{
 gradient_ecart_x(13)

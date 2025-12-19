@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_x.R, R/distance_x_en_km.R, R/ecart_x.R
 \name{distance_x}
 \alias{distance_x}
-\title{Title DISTANCE ALONG X}
+\title{DISTANCE ALONG X}
 \usage{
 distance_x(
   t,
@@ -77,11 +77,11 @@ the projectile position along x at time t
 the projectile position along x at time t
 }
 \description{
-Title DISTANCE ALONG X
+DISTANCE ALONG X
 
-Title DISTANCE ALONG X
+DISTANCE ALONG X
 
-Title DISTANCE ALONG X
+DISTANCE ALONG X
 }
 \examples{
 distance_x(51, 0.008, 9, 21, 9, 0.01, 4.12, -7.8, 12, 0.5*pi, 39)
