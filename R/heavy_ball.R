@@ -33,19 +33,19 @@ HEAVY_ALPHA <- 0.001
 HEAVY_GAMMA <- 0.83
 LIMITE <- 150
 TOLERANCE <- 0.006
-DATE <- 10
+DATE <- 5
 
 ABCISSE_CIBLE <- 12779.2843
 M_N <- 12
 M_I <- 5
 LAMBDA <- 0.02
-V_E <- 12
+V_E <- 22
 Ro <- 0.01
 A_X <- -8.33
 C_X <- 4.345
 V_R <- 0.47
-ALPHA <- 0.25*pi
-V_0 <- 40
+ALPHA <- 0.41*pi
+V_0 <- 80
 
 ## A FUNCTION SPECIFICALLY DESIGNED TO MONITOR THE VARIOUS CONSTRAINTS APPLIED TO THE OPTIMIZATION PARAMETERS
 #' contraints
@@ -203,24 +203,34 @@ heavy_ball <- function(t = DATE, heavy_alpha = HEAVY_ALPHA, heavy_gamma = HEAVY_
       break
     }
   }# WE DISPLAY (or PRINT) THE OPTIMAL PARAMETERS FOUND BY THE ALGORITHM
+  ecart_non_optimal <- numeric(101)
+  ecart_optimal <- numeric(101)
+  temps <- numeric(101)
+  taille <- 0
+  for (instant in seq(0, 5, 0.05)) {
+    temps[instant+1] <- instant
+    ecart_non_optimal[instant+1] <- abs(distance_x(t = temps[instant+1], alpha = ALPHA_TEST, Vo = Vo_TEST, Ve = Ve_TEST) - taille - 16)
+    ecart_optimal[instant+1] <- abs(distance_x(t = temps[instant+1], alpha = 0.41*pi, Vo = 80, Ve = 22) - taille - 16)
+    taille <- taille + 1
+  }
 
   projectiles <- data.frame(
-    temps = temps,
-    ecart_non_optimal = distance_x(t = temps, alpha = alpha_test, Vo = Vo_test, Ve = Ve_test) - abcisse_cible,
-    ecart_optimal = distance_x(t = temps, alpha = historique_alpha[convergence], Vo = historique_Vo[convergence], Ve = historique_Ve[convergence] - abcisse_cible)
+    Temps = temps,
+    Ecart_non_optimal = ecart_non_optimal,
+    Ecart_optimal = ecart_optimal
   )
 
   # TURNING THE LARGE FRAME INTO A LONG FRAME EASIER TO MANAGE
   projectiles_long <- pivot_longer(projectiles,
-                                   cols = c(ecart_non_optimal, ecart_optimal),
+                                   cols = c(Ecart_non_optimal, Ecart_optimal),
                                    names_to = "type",
                                    values_to = "erreur")
 
   # CREATING AND SAVING  THE COMPARISON PLOT ON A PICTURE
-  graph <- ggplot(projectiles_long, aes(x = temps, y = erreur, color = type)) +
+  graph <- ggplot(projectiles_long, aes(x = Temps, y = erreur, color = type)) +
     geom_line(linewidth = 1) +
-    scale_color_manual(values = c("ecart_non_optimal" = "red",
-                                  "ecart_optimal" = "blue"),
+    scale_color_manual(values = c("Ecart_non_optimal" = "red",
+                                  "Ecart_optimal" = "blue"),
                        labels = c("Non optimale", "Optimale")) +
     labs(x = "Temps (s)",
          y = "Erreur sur l'abcisse",
@@ -228,8 +238,8 @@ heavy_ball <- function(t = DATE, heavy_alpha = HEAVY_ALPHA, heavy_gamma = HEAVY_
          color = "Type de trajectoire") +
     theme_minimal()
 
-  ggsave("graphique_projectiles.png", width = 10, height = 8, dpi = 300)
   print(graph)
+  ggsave("graphique_projectiles.png", width = 10, height = 8, dpi = 300)
 
   return(cat("\n\nConvergence atteinte à l'iteration ", convergence, "\n", "Les parametres optimaux sont :\nalpha :: ", historique_alpha[convergence]/pi, "π , ", "\nVo    :: ", historique_Vo[convergence], "\nVe    :: ", historique_Ve[convergence]))
 }
